@@ -13,7 +13,7 @@ def run_fast_scandir(dir, ext):  # dir: str, ext: list
         if f.is_file():
             if (os.path.getsize(f.path) > 4000):
                 if os.path.splitext(f.name)[1].lower() in ext:
-                    files.append(f.path.replace('\\', r'\\'))
+                    files.append(f.path)
 
     for dir in list(subfolders):
         sf, f = run_fast_scandir(dir, ext)
@@ -24,8 +24,6 @@ def run_fast_scandir(dir, ext):  # dir: str, ext: list
 
 def limit(in_folder, out_folder, limit):
     subfolders, files = run_fast_scandir(in_folder, [".ogg"])
-    in_folder = in_folder.replace('\\', r'\\')
-    out_folder = out_folder.replace('\\', r'\\')
 
     # root export
     if not os.path.isdir(out_folder):
@@ -36,6 +34,7 @@ def limit(in_folder, out_folder, limit):
         newFolder = folder.replace(in_folder, out_folder)
         if not os.path.isdir(newFolder):
             os.makedirs(newFolder)
+            print(newFolder)
 
     count = 1
     for file in files:
@@ -45,7 +44,6 @@ def limit(in_folder, out_folder, limit):
         client.write("SelectAll")
         client.write("Limiter: gain-L=0 gain-R=0 hold=10 makeup=No thresh=" + str(limit) + " type=HardLimit")
         client.write('Export2: Filename="' + newFile + '"')
-        print(newFile)
         print(str(count) + "/" + str(len(files)))
         count += 1
 
